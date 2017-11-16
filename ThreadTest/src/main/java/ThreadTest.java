@@ -1,15 +1,39 @@
+import javax.xml.crypto.Data;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.List;
+import java.util.concurrent.*;
 
 /**
  * Created by bonismo@hotmail.com
  * 下午11:37 on 17/11/16.
  */
 public class ThreadTest {
-    public static void main(String[] args) {
-        ExecutorService pool = Executors.newFixedThreadPool();
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        System.out.println(" --- 程序开始运行 ---");
+        Date date1 = new Date();
+        int taskSize = 5;
+        // 创建一个线程池
+        ExecutorService pool = Executors.newFixedThreadPool(taskSize);
+        // 创建有返回值的任务
+        List<Future> list = new ArrayList<>();
+        for (int i = 0; i < taskSize; i++) {
+            Callable callable = new MyCallable(i + "");
+            Future future = pool.submit(callable);
+            System.out.println(">>>" + future.get().toString());
+            list.add(future);
+        }
+        pool.shutdown();
+
+        // 获取所有并发运行结果
+        for (Future future : list) {
+            System.out.println(">>>" + future.get().toString());
+        }
+
+        Date date2 = new Date();
+        System.out.println(" ---- 程序结束运行 ---- ");
+        System.out.println(" ---- 程序运行时间 ---- ");
+        System.out.println("【" + (date2.getTime() - date1.getTime()) + "毫秒 】");
     }
 }
 
