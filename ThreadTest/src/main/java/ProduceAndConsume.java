@@ -1,11 +1,17 @@
+import java.nio.channels.NonWritableChannelException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by bonismo@hotmail.com
  * 下午4:26 on 17/11/17.
+ * <p>
+ * 假设一个盘子只能放一个鸡蛋，一次只能拿一个，一次只能放一个。
  */
 public class ProduceAndConsume {
+    public static void main(String[] args) {
+
+    }
 }
 
 // 放鸡蛋的盘子
@@ -33,5 +39,52 @@ class Plate{
         return egg;
     }
 
-    public
+    public synchronized void  putEgg(Object egg) {
+        // 当盘子有一个鸡蛋时，线程等待
+        while (eggs.size() > 0) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        eggs.add(egg);
+        notify();
+        System.out.println("放入鸡蛋");
+    }
+
+    // 放入鸡蛋线程
+    static class AddThread implements Runnable {
+
+        // 盘子
+        private Plate plate;
+        // 鸡蛋
+        private Object egg = new Object();
+
+        public AddThread(Plate plate) {
+            this.plate = plate;
+        }
+
+        @Override
+        public void run() {
+            plate.putEgg(egg);
+
+        }
+    }
+
+    // 拿鸡蛋线程
+    static class GetThread implements Runnable {
+
+        private Plate plate;
+
+        public GetThread(Plate plate) {
+            this.plate = plate;
+        }
+
+        @Override
+        public void run() {
+            plate.getEgg();
+        }
+    }
+
 }
