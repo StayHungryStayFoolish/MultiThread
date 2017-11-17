@@ -23,7 +23,7 @@ public class ThreadLoop {
      * @param threadType
      */
     public static void threadExecute(Business business, String threadType) {
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 3; i++) {
             try {
                 if ("main".equals(threadType)) {
                     business.main(i);
