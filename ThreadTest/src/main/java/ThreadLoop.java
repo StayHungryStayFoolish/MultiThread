@@ -13,6 +13,7 @@ public class ThreadLoop {
                 threadExecute(business, "sub");
             }
         }).start();
+        // 子线程先运行，进入 else 条件，然后 notify() 主线程
         threadExecute(business, "main");
     }
 
