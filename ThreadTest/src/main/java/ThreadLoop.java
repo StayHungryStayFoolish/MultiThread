@@ -10,11 +10,19 @@ import java.lang.management.GarbageCollectorMXBean;
  */
 public class ThreadLoop {
     public static void main(String[] args) {
-
+        Business business = new Business();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                threadExecute(business, "sub");
+            }
+        }).start();
+        threadExecute(business, "main");
     }
 
     /**
      * 线程处理
+     *
      * @param business
      * @param threadType
      */
@@ -40,6 +48,7 @@ class Business {
 
     /**
      * 主线程
+     *
      * @param loop
      * @throws InterruptedException
      */
@@ -56,6 +65,7 @@ class Business {
 
     /**
      * 子线程
+     *
      * @param loop
      * @throws InterruptedException
      */
