@@ -1,6 +1,8 @@
 /**
  * Created by bonismo@hotmail.com
  * 下午5:15 on 17/11/17.
+ * <p>
+ * 休眠线程
  */
 public class SleepTest {
     public static void main(String[] args) {
@@ -14,6 +16,17 @@ public class SleepTest {
         t2.start();
     }
 }
+
+/**
+ * t1准备计算
+ * t1感觉累了，开始睡觉
+ * t1睡醒了，开始计算
+ * t1计算完成
+ * t2准备计算
+ * t2感觉累了，开始睡觉
+ * t2睡醒了，开始计算
+ * t2计算完成
+ */
 
 class SleepThread extends Thread {
     private Service service;
@@ -34,7 +47,8 @@ class Service {
         System.out.println(Thread.currentThread().getName() + "准备计算");
         System.out.println(Thread.currentThread().getName() + "感觉累了，开始睡觉");
         try {
-            Thread.sleep(10000);// 睡10秒
+            // 睡1秒
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             return;
         }
