@@ -9,10 +9,29 @@ import java.util.List;
  * 假设一个盘子只能放一个鸡蛋，一次只能拿一个，一次只能放一个。
  */
 public class ProduceAndConsume {
-    public static void main(String[] args) {
 
+    public static void main(String[] args) {
+        Plate plate = new Plate();
+        for (int i = 0; i < 5; i++) {
+            new Thread(new Plate.AddThread(plate)).start();
+            new Thread(new Plate.GetThread(plate)).start();
+        }
     }
 }
+
+/**
+ *
+ 放入鸡蛋
+ 拿到鸡蛋
+ 放入鸡蛋
+ 拿到鸡蛋
+ 放入鸡蛋
+ 拿到鸡蛋
+ 放入鸡蛋
+ 拿到鸡蛋
+ 放入鸡蛋
+ 拿到鸡蛋
+ */
 
 // 放鸡蛋的盘子
 class Plate{
