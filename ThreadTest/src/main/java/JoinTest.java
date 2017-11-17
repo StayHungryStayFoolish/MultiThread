@@ -1,8 +1,9 @@
-import javax.sound.midi.Soundbank;
-
 /**
  * Created by bonismo@hotmail.com
  * 下午5:32 on 17/11/17.
+ * <p>
+ * Join 合并线程
+ * 当子线程需要大量耗时运算，所以主线程必须等待子线程执行完成后再结束。
  */
 public class JoinTest {
     public static void main(String[] args) throws InterruptedException {
@@ -17,17 +18,16 @@ public class JoinTest {
 }
 
 /**
- *
- t1>>10执行了0次
- t1>>10执行了1次
- t1>>10执行了2次
- t1>>10执行了3次
- t1>>10执行了4次
- t2>>11执行了0次
- t2>>11执行了1次
- t2>>11执行了2次
- t2>>11执行了3次
- t2>>11执行了4次
+ * t1>>10执行了0次
+ * t1>>10执行了1次
+ * t1>>10执行了2次
+ * t1>>10执行了3次
+ * t1>>10执行了4次
+ * t2>>11执行了0次
+ * t2>>11执行了1次
+ * t2>>11执行了2次
+ * t2>>11执行了3次
+ * t2>>11执行了4次
  */
 class JoinThread extends Thread {
     public JoinThread(String name) {
