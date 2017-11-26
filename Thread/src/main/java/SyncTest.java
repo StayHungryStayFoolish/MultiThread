@@ -14,6 +14,9 @@
  * Thread.sleep()
  * 使当前线程暂停执行，进入阻塞状态，让所 CPU 给其他线程执行，但是不会释放对象锁。
  * 即如果有  synchronized 同步块，其他线程仍然不能访问共享数据。
+ *
+ * 关键：
+ * 第 3 步骤执行完成，子线程 methodOne 先执行还是 methodTwo 需要看谁先获取到锁
  */
 public class SyncTest implements Runnable {
 
