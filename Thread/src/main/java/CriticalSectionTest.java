@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -12,6 +14,53 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class CriticalSectionTest {
 
+    public static void main(String[] args) {
+        PairManage manage1 = new PairManager1();
+        PairManage manage2 = new PairManager2();
+
+        testMethod(manage1,manage2);
+    }
+
+    /**
+     运行测试结果：
+
+     方法锁级别：
+     pm1 :Pair Pair ==>x:515, y:515checkCounter = 355
+     对象锁级别（直接对临界区进行控制）：
+     pm2 :Pair Pair ==>x:511, y:511checkCounter = 26053172
+
+     方法锁（同步整个方法），一个线程在改方法独占当前方法资源，无论这个方法中是否有线程安全。效率低
+     对象锁（锁临界区），只在需要线程安全的地方加锁。效率高。
+     检查数量 checkCounter 并不代表效率
+
+     */
+
+    public static void testMethod(PairManage manage1, PairManage manage2) {
+        // 建立线程池
+        ExecutorService service = Executors.newCachedThreadPool();
+
+        // 自增操作临界区
+        PairManipulator pm1 = new PairManipulator(manage1);
+        PairManipulator pm2 = new PairManipulator(manage2);
+
+        // 检查临界区
+        PairChecker checker1 = new PairChecker(manage1);
+        PairChecker checker2 = new PairChecker(manage2);
+
+        // 线程处理
+        service.execute(pm1);
+        service.execute(pm2);
+        service.execute(checker1);
+        service.execute(checker2);
+
+        try {
+            TimeUnit.MILLISECONDS.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("pm1 :"+pm1+ "\npm2 :"+pm2);
+        System.exit(0);
+    }
 }
 
 /**
@@ -120,11 +169,73 @@ abstract class PairManage {
     }
 }
 
-class PairManger1 extends PairManage {
 
+class PairManager1 extends PairManage {
+
+    // 方法级别锁
     @Override
     public synchronized void increment() {
         pair.incrementX();
+        pair.incrementY();
+        store(getPair());
+    }
+}
 
+class PairManager2 extends PairManage {
+
+    // 对象界别锁，锁定的是临界区
+    @Override
+    public void increment() {
+        Pair temp;
+        synchronized (this) {
+            pair.incrementX();
+            pair.incrementY();
+            temp = getPair();
+        }
+        store(temp);
+    }
+}
+
+/**
+ * 任务类1，不断使用 PairManager 对 Pair 进行自增操作
+ */
+class PairManipulator implements Runnable {
+
+    private PairManage manage;
+
+    public PairManipulator(PairManage manage) {
+        this.manage = manage;
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            manage.increment();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Pair " + manage.getPair() + "checkCounter = " + manage.checkCounter.get();
+    }
+}
+
+/**
+ * 检查 x == y 的状态
+ */
+class PairChecker implements Runnable {
+
+    private PairManage manage;
+
+    public PairChecker(PairManage manage) {
+        this.manage = manage;
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            manage.checkCounter.incrementAndGet();
+            manage.getPair().checkState();
+        }
     }
 }
