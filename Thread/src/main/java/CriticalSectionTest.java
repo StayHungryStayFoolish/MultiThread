@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *         PairChecker    PairManipulator
  *      线程检查是否 x== y  线程操作类，实现自增
  *               /|\           /|\
- *                 \   实现类    |
+ *                 \   注入      |
  *                  \           |
  *                   \          |    |--- PairManager1 方法同步锁
  *               PairManage 抽象类 ---|
