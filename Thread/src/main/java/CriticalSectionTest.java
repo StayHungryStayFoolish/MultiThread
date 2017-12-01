@@ -11,6 +11,31 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 下午10:25 on 17/11/30.
  * <p>
  * 临界区测试
+ *
+ * 设计结构
+ *
+ *                  CriticalSection 临界区 Client
+ *                  使用线程池，测试两个同步锁的效率与区别
+ *                      |
+ *                      |
+ *               ———————————————
+ *              |               |
+ *              |               |
+ *              |               |
+ *         PairChecker    PairManipulator
+ *      线程检查是否 x== y  线程操作类，实现自增
+ *                \             |
+ *                 \            |
+ *                  \           |
+ *                   \          |    |--- PairManager1 方法同步锁
+ *               PairManage 抽象类 ---|
+ *                        |          |--- PairManager2 对象同步锁（锁定临界区）
+ *                        |
+ *                        |
+ *                     Pair 坐标 Entity
+ *                     定义自增方法
+ *
+ *
  */
 public class CriticalSectionTest {
 
